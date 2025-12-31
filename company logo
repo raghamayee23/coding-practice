@@ -1,0 +1,19 @@
+#!/bin/python3
+import sys
+from collections import Counter
+
+if __name__ == '__main__':
+    s = input().strip()
+    
+    # Count frequency of each character
+    freq = Counter(s)
+    
+    # Sort by (-count, character) so that:
+    # 1. Higher counts come first
+    # 2. If counts are equal, alphabetical order
+    sorted_chars = sorted(freq.items(), key=lambda x: (-x[1], x[0]))
+    
+    # Print top 3
+    for char, count in sorted_chars[:3]:
+        print(char, count)
+
