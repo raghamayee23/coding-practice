@@ -1,0 +1,23 @@
+class Cycle {
+    void define_me() {
+        System.out.println("a vehicle with pedals.");
+    }
+}
+
+class Motorcycle extends Cycle {
+    void define_me() {
+        System.out.println("a cycle with an engine.");
+    }
+
+    Motorcycle() {
+        System.out.println("Hello I am a motorcycle, I am a cycle with an engine.");
+        System.out.print("My ancestor is a cycle who is ");
+        super.define_me();  // Calls the superclass method
+    }
+}
+
+public class Solution {
+    public static void main(String[] args) {
+        Motorcycle m = new Motorcycle();
+    }
+}
