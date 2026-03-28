@@ -1,0 +1,65 @@
+class Solution {
+    public String findTheString(int[][] lcp) {
+        int n = lcp.length;
+        DSU dsu = new DSU(n);
+
+        // Step 1: Validate diagonal and symmetry
+        for (int i = 0; i < n; i++) {
+            if (lcp[i][i] != n - i) return "";
+            for (int j = 0; j < n; j++) {
+                if (lcp[i][j] != lcp[j][i]) return "";
+                if (lcp[i][j] > 0) dsu.union(i, j);
+            }
+        }
+
+        // Step 2: Assign characters greedily
+        char[] res = new char[n];
+        Arrays.fill(res, '?');
+        Map<Integer, Character> groupChar = new HashMap<>();
+        char nextChar = 'a';
+
+        for (int i = 0; i < n; i++) {
+            int root = dsu.find(i);
+            if (!groupChar.containsKey(root)) {
+                if (nextChar > 'z') return ""; // not enough letters
+                groupChar.put(root, nextChar++);
+            }
+            res[i] = groupChar.get(root);
+        }
+
+        // Step 3: Verify by recomputing LCP
+        if (!verify(res, lcp)) return "";
+        return new String(res);
+    }
+
+    private boolean verify(char[] s, int[][] lcp) {
+        int n = s.length;
+        int[][] calc = new int[n][n];
+        for (int i = n - 1; i >= 0; i--) {
+            for (int j = n - 1; j >= 0; j--) {
+                if (s[i] == s[j]) {
+                    if (i + 1 < n && j + 1 < n) calc[i][j] = 1 + calc[i + 1][j + 1];
+                    else calc[i][j] = 1;
+                } else calc[i][j] = 0;
+                if (calc[i][j] != lcp[i][j]) return false;
+            }
+        }
+        return true;
+    }
+
+    // Union-Find helper
+    static class DSU {
+        int[] parent;
+        DSU(int n) {
+            parent = new int[n];
+            for (int i = 0; i < n; i++) parent[i] = i;
+        }
+        int find(int x) {
+            if (parent[x] != x) parent[x] = find(parent[x]);
+            return parent[x];
+        }
+        void union(int a, int b) {
+            parent[find(a)] = find(b);
+        }
+    }
+}
